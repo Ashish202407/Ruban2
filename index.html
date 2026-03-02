@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Founder Valuation Studio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient-shape ambient-shape-a"></div>
+    <div class="ambient-shape ambient-shape-b"></div>
+    <main class="app-shell">
+      <header class="hero">
+        <p class="eyebrow">Founder Valuation Studio</p>
+        <h1>Fast valuation range with transparent methods</h1>
+        <p class="subhead">
+          Decision-support for founders across US and Europe. Get a credible range,
+          method breakdown, confidence score, and downloadable outputs.
+        </p>
+        <div class="mode-toggle" role="tablist" aria-label="Assessment depth">
+          <button type="button" class="mode-btn active" data-mode="quick">
+            Quick Check
+          </button>
+          <button type="button" class="mode-btn" data-mode="deep">
+            Deep Dive
+          </button>
+        </div>
+      </header>
+
+      <section class="panel">
+        <form id="valuation-form" novalidate>
+          <div class="form-grid">
+            <section class="form-section">
+              <h2>Company Profile</h2>
+              <label>
+                Company name
+                <input type="text" name="companyName" placeholder="Acme Labs" />
+              </label>
+              <label>
+                Stage
+                <select name="stage" id="stage">
+                  <option value="pre-revenue">Pre-revenue</option>
+                  <option value="early-revenue" selected>Early revenue</option>
+                  <option value="growth">Growth</option>
+                </select>
+              </label>
+              <label>
+                Sector
+                <select name="sector">
+                  <option>SaaS</option>
+                  <option>AI-native software</option>
+                  <option>E-commerce/D2C</option>
+                  <option>Marketplace</option>
+                  <option>Fintech</option>
+                  <option>Healthtech</option>
+                </select>
+              </label>
+              <label>
+                Geography
+                <select name="geography">
+                  <option>US</option>
+                  <option>Europe</option>
+                </select>
+              </label>
+              <label>
+                Business model
+                <select name="businessModel">
+                  <option>B2B</option>
+                  <option>B2C</option>
+                  <option>B2B2C</option>
+                </select>
+              </label>
+              <label>
+                Founding year
+                <input type="number" name="foundingYear" min="1990" max="2035" value="2022" />
+              </label>
+            </section>
+
+            <section class="form-section">
+              <h2>Traction & Economics</h2>
+              <label data-revenue="true">
+                Annual revenue run-rate
+                <input type="number" name="revenueRunRate" placeholder="1200000" min="0" step="1000" />
+              </label>
+              <label data-revenue="true">
+                Annual growth (%)
+                <input type="number" name="growthRate" placeholder="60" min="-50" max="500" step="1" />
+              </label>
+              <label data-revenue="true">
+                Gross margin (%)
+                <input type="number" name="grossMargin" placeholder="70" min="0" max="100" step="1" />
+              </label>
+              <label data-revenue="true">
+                Active customers
+                <input type="number" name="customerCount" placeholder="180" min="0" step="1" />
+              </label>
+              <label data-revenue="true">
+                CAC
+                <input type="number" name="cac" placeholder="2800" min="0" step="1" />
+              </label>
+              <label data-revenue="true">
+                LTV
+                <input type="number" name="ltv" placeholder="14000" min="0" step="1" />
+              </label>
+              <label data-revenue="true">
+                Annual churn (%)
+                <input type="number" name="churn" placeholder="10" min="0" max="100" step="1" />
+              </label>
+            </section>
+
+            <section class="form-section">
+              <h2>Market & Risk</h2>
+              <label>
+                TAM estimate
+                <input type="number" name="tam" placeholder="5000000000" min="0" step="1000000" />
+              </label>
+              <label>
+                Competition intensity (1-5)
+                <input type="range" name="competitionIntensity" min="1" max="5" step="1" value="3" />
+              </label>
+              <label>
+                Moat strength (1-5)
+                <input type="range" name="moatStrength" min="1" max="5" step="1" value="3" />
+              </label>
+              <label>
+                Founder experience (1-5)
+                <input type="range" name="founderExperience" min="1" max="5" step="1" value="3" />
+              </label>
+              <label>
+                Concentration risk (1-5)
+                <input type="range" name="concentrationRisk" min="1" max="5" step="1" value="3" />
+              </label>
+              <label>
+                Regulatory risk (1-5)
+                <input type="range" name="regulatoryRisk" min="1" max="5" step="1" value="2" />
+              </label>
+            </section>
+
+            <section class="form-section">
+              <h2>Fundraise Context</h2>
+              <label>
+                Target raise
+                <input type="number" name="raiseTarget" placeholder="2500000" min="0" step="1000" />
+              </label>
+              <label>
+                Runway (months)
+                <input type="number" name="runwayMonths" placeholder="18" min="1" max="48" step="1" />
+              </label>
+              <label>
+                Target dilution (%)
+                <input type="number" name="targetDilution" placeholder="18" min="1" max="60" step="1" />
+              </label>
+              <label class="deep-field" data-deep="true">
+                Net revenue retention (%)
+                <input type="number" name="nrr" placeholder="115" min="30" max="200" step="1" />
+              </label>
+              <label class="deep-field" data-deep="true">
+                Pipeline coverage (x next quarter target)
+                <input type="number" name="pipelineCoverage" placeholder="3.2" min="0" max="12" step="0.1" />
+              </label>
+              <label class="deep-field" data-deep="true">
+                Burn multiple
+                <input type="number" name="burnMultiple" placeholder="1.6" min="0" max="10" step="0.1" />
+              </label>
+              <label class="deep-field" data-deep="true">
+                3Y projected revenue CAGR (%)
+                <input type="number" name="projectedCagr" placeholder="40" min="-20" max="200" step="1" />
+              </label>
+            </section>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="primary-btn">Run Valuation</button>
+            <p id="form-warning" class="warning" aria-live="polite"></p>
+          </div>
+        </form>
+      </section>
+
+      <section id="results" class="panel results hidden" aria-live="polite">
+        <div class="result-head">
+          <div>
+            <p class="eyebrow">Valuation Output</p>
+            <h2 id="result-company">Your startup</h2>
+            <p id="result-meta" class="muted"></p>
+          </div>
+          <div class="confidence-box">
+            <p>Confidence</p>
+            <strong id="confidence-score">0</strong>
+            <span id="confidence-label"></span>
+          </div>
+        </div>
+
+        <div class="range-grid">
+          <article class="range-card">
+            <p>Low</p>
+            <strong id="range-low">-</strong>
+          </article>
+          <article class="range-card emphasis">
+            <p>Base</p>
+            <strong id="range-base">-</strong>
+          </article>
+          <article class="range-card">
+            <p>High</p>
+            <strong id="range-high">-</strong>
+          </article>
+        </div>
+
+        <div class="results-grid">
+          <article class="card">
+            <h3>Method Breakdown</h3>
+            <div id="method-bars" class="method-bars"></div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Weight</th>
+                  <th>Base</th>
+                </tr>
+              </thead>
+              <tbody id="method-table"></tbody>
+            </table>
+          </article>
+
+          <article class="card">
+            <h3>Sensitivity</h3>
+            <label>
+              Growth shift
+              <input type="range" id="sensitivity-growth" min="-20" max="20" step="1" value="0" />
+              <span id="sensitivity-growth-value">0%</span>
+            </label>
+            <label>
+              Multiple shift
+              <input type="range" id="sensitivity-multiple" min="-20" max="20" step="1" value="0" />
+              <span id="sensitivity-multiple-value">0%</span>
+            </label>
+            <label>
+              Discount rate shift
+              <input type="range" id="sensitivity-discount" min="-20" max="20" step="1" value="0" />
+              <span id="sensitivity-discount-value">0%</span>
+            </label>
+            <p class="muted">
+              Sliders update all methods based on each method's exposure.
+            </p>
+          </article>
+        </div>
+
+        <article class="card">
+          <h3>Top Drivers</h3>
+          <ul id="driver-list" class="driver-list"></ul>
+          <p class="muted disclaimer">
+            For decision-support only. Not investment advice. Benchmarks are static
+            model assumptions in this v1 build.
+          </p>
+          <p id="timestamp" class="muted"></p>
+        </article>
+
+        <div class="download-actions">
+          <button type="button" id="download-report" class="secondary-btn">
+            Download Report (PDF)
+          </button>
+          <button type="button" id="download-model" class="secondary-btn">
+            Download Excel Model
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
