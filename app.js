@@ -1062,82 +1062,137 @@
      PDF EXPORT — html2pdf.js
      ══════════════════════════════════════════════════════════════ */
   function downloadPdfReport(inputs, result) {
-    if (typeof html2pdf === "undefined") {
+    var JsPDF = (window.jspdf && window.jspdf.jsPDF) || (window.jsPDF);
+    if (!JsPDF) {
       alert("PDF library not loaded. Please check your internet connection.");
       return;
     }
 
-    // Build method rows HTML
-    var methodRows = result.methods.map(function (m) {
-      return '<tr>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid #ddd">' + escapeHtml(m.name) + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid #ddd">' + Math.round(m.weight * 100) + '%</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid #ddd">' + escapeHtml(formatMoney(m.low, inputs.geography)) + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid #ddd">' + escapeHtml(formatMoney(m.base, inputs.geography)) + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid #ddd">' + escapeHtml(formatMoney(m.high, inputs.geography)) + '</td>' +
-        '</tr>';
-    }).join("");
+    var doc = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
+    var pw = doc.internal.pageSize.getWidth();
+    var m = 20;
+    var usable = pw - 2 * m;
+    var y = 25;
 
-    var driverItems = result.drivers.map(function (d) {
-      return '<li style="margin-bottom:6px">' + escapeHtml(d) + '</li>';
-    }).join("");
+    // ── Header ──
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text(inputs.companyName, m, y);
+    y += 8;
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(100);
+    doc.text(
+      titleCase(inputs.stage) + "  |  " + inputs.sector + "  |  " + inputs.geography,
+      m, y
+    );
+    y += 5;
+    doc.text(
+      "Generated: " + formatDate(result.timestamp) + "  |  Assumptions: " + result.assumptionsDate,
+      m, y
+    );
+    y += 4;
+    doc.setDrawColor(17);
+    doc.setLineWidth(0.7);
+    doc.line(m, y, pw - m, y);
+    y += 12;
 
-    // Build full HTML with inline styles for html2pdf
-    var html = '<div style="font-family:Arial,Helvetica,sans-serif;color:#111;padding:32px;max-width:780px">' +
-      '<div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:3px solid #111">' +
-        '<div>' +
-          '<h1 style="font-size:22px;margin:0">' + escapeHtml(inputs.companyName) + '</h1>' +
-          '<p style="margin:4px 0 0;color:#555;font-size:12px">' +
-            escapeHtml(titleCase(inputs.stage)) + ' | ' + escapeHtml(inputs.sector) + ' | ' + escapeHtml(inputs.geography) +
-            ' | Generated: ' + escapeHtml(formatDate(result.timestamp)) + ' | Assumptions: ' + escapeHtml(result.assumptionsDate) +
-          '</p>' +
-        '</div>' +
-      '</div>' +
-      '<h2 style="font-size:15px;margin:22px 0 10px;padding-bottom:4px;border-bottom:1px solid #ddd">Executive Summary</h2>' +
-      '<div style="display:flex;gap:12px;margin-bottom:16px">' +
-        '<div style="flex:1;border:1px solid #ddd;border-radius:8px;padding:12px;text-align:center">' +
-          '<span style="font-size:12px;color:#777">Low</span>' +
-          '<strong style="display:block;font-size:18px;margin-top:4px">' + escapeHtml(formatMoney(result.range.low, inputs.geography)) + '</strong>' +
-        '</div>' +
-        '<div style="flex:1;border-radius:8px;padding:12px;text-align:center;background:#111;color:#fff">' +
-          '<span style="font-size:12px;color:rgba(255,255,255,0.7)">Base</span>' +
-          '<strong style="display:block;font-size:18px;margin-top:4px">' + escapeHtml(formatMoney(result.range.base, inputs.geography)) + '</strong>' +
-        '</div>' +
-        '<div style="flex:1;border:1px solid #ddd;border-radius:8px;padding:12px;text-align:center">' +
-          '<span style="font-size:12px;color:#777">High</span>' +
-          '<strong style="display:block;font-size:18px;margin-top:4px">' + escapeHtml(formatMoney(result.range.high, inputs.geography)) + '</strong>' +
-        '</div>' +
-      '</div>' +
-      '<h2 style="font-size:15px;margin:22px 0 10px;padding-bottom:4px;border-bottom:1px solid #ddd">Method Breakdown</h2>' +
-      '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px">' +
-        '<thead><tr>' +
-          '<th style="background:#111;color:#fff;padding:8px 10px;text-align:left">Method</th>' +
-          '<th style="background:#111;color:#fff;padding:8px 10px;text-align:left">Weight</th>' +
-          '<th style="background:#111;color:#fff;padding:8px 10px;text-align:left">Low</th>' +
-          '<th style="background:#111;color:#fff;padding:8px 10px;text-align:left">Base</th>' +
-          '<th style="background:#111;color:#fff;padding:8px 10px;text-align:left">High</th>' +
-        '</tr></thead>' +
-        '<tbody>' + methodRows + '</tbody>' +
-      '</table>' +
-      '<h2 style="font-size:15px;margin:22px 0 10px;padding-bottom:4px;border-bottom:1px solid #ddd">Key Drivers</h2>' +
-      '<ul style="font-size:12px;padding-left:20px">' + driverItems + '</ul>' +
-      '<div style="margin-top:28px;padding-top:12px;border-top:1px solid #ddd;font-size:11px;color:#888">' +
-        '<p>For decision-support only. Not investment advice. Benchmarks are static model assumptions. Generated by Founder Valuation Studio.</p>' +
-      '</div>' +
-    '</div>';
+    // ── Executive Summary ──
+    doc.setTextColor(0);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Executive Summary", m, y);
+    y += 10;
+
+    var cardW = (usable - 10) / 3;
+    var ranges = [
+      { label: "Low", val: formatMoney(result.range.low, inputs.geography), dark: false },
+      { label: "Base", val: formatMoney(result.range.base, inputs.geography), dark: true },
+      { label: "High", val: formatMoney(result.range.high, inputs.geography), dark: false },
+    ];
+    ranges.forEach(function (r, i) {
+      var x = m + i * (cardW + 5);
+      if (r.dark) {
+        doc.setFillColor(17, 17, 17);
+        doc.roundedRect(x, y, cardW, 22, 2, 2, "F");
+        doc.setTextColor(180);
+      } else {
+        doc.setDrawColor(200);
+        doc.roundedRect(x, y, cardW, 22, 2, 2, "S");
+        doc.setTextColor(120);
+      }
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "normal");
+      doc.text(r.label, x + cardW / 2, y + 8, { align: "center" });
+      doc.setFontSize(15);
+      doc.setFont("helvetica", "bold");
+      if (r.dark) doc.setTextColor(255); else doc.setTextColor(17);
+      doc.text(r.val, x + cardW / 2, y + 17, { align: "center" });
+    });
+    doc.setTextColor(0);
+    y += 34;
+
+    // ── Method Breakdown ──
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Method Breakdown", m, y);
+    y += 8;
+
+    var cols = [m, m + 42, m + 68, m + 102, m + 136];
+    var colLabels = ["Method", "Weight", "Low", "Base", "High"];
+    // Header row
+    doc.setFillColor(17, 17, 17);
+    doc.rect(m, y - 5, usable, 8, "F");
+    doc.setTextColor(255);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    colLabels.forEach(function (lbl, i) { doc.text(lbl, cols[i] + 3, y); });
+    y += 6;
+
+    // Data rows
+    doc.setTextColor(0);
+    doc.setFont("helvetica", "normal");
+    result.methods.forEach(function (mt, i) {
+      if (i % 2 === 0) {
+        doc.setFillColor(245, 245, 245);
+        doc.rect(m, y - 4, usable, 7, "F");
+      }
+      doc.text(mt.name, cols[0] + 3, y);
+      doc.text(Math.round(mt.weight * 100) + "%", cols[1] + 3, y);
+      doc.text(formatMoney(mt.low, inputs.geography), cols[2] + 3, y);
+      doc.text(formatMoney(mt.base, inputs.geography), cols[3] + 3, y);
+      doc.text(formatMoney(mt.high, inputs.geography), cols[4] + 3, y);
+      y += 7;
+    });
+    y += 10;
+
+    // ── Key Drivers ──
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Key Drivers", m, y);
+    y += 8;
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    result.drivers.forEach(function (d) {
+      var lines = doc.splitTextToSize("\u2022  " + d, usable - 4);
+      doc.text(lines, m + 2, y);
+      y += lines.length * 5;
+    });
+    y += 10;
+
+    // ── Disclaimer ──
+    doc.setDrawColor(200);
+    doc.setLineWidth(0.3);
+    doc.line(m, y, pw - m, y);
+    y += 6;
+    doc.setFontSize(8);
+    doc.setTextColor(140);
+    doc.text("For decision-support only. Not investment advice.", m, y);
+    y += 4;
+    doc.text("Benchmarks are static model assumptions. Generated by Founder Valuation Studio.", m, y);
 
     var filename = safeFilename(inputs.companyName || "startup") + "_valuation_report.pdf";
-
-    html2pdf()
-      .set({
-        margin: [10, 10, 10, 10],
-        filename: filename,
-        image: { type: "jpeg", quality: 0.95 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      })
-      .from(html, "string")
-      .save();
+    doc.save(filename);
   }
 
   /* ══════════════════════════════════════════════════════════════
