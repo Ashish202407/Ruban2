@@ -1205,141 +1205,288 @@
     }
 
     var wb = new ExcelJS.Workbook();
-    wb.creator = "Founder Valuation Studio";
+    wb.creator = "The VC Corner \u2014 Founder Valuation Studio";
     wb.created = new Date();
 
-    var currency = inputs.geography === "US" ? "$" : "\u20AC";
+    // Style constants
+    var NAVY = "FF0D1B2A";
+    var DARK_BG = "FF1B2838";
+    var BLUE_FNT = "FF2155CD";
+    var BLK = "FF111111";
+    var GREY_TXT = "FF777777";
+    var LIGHT_GRY = "FFF5F5F5";
+    var SECTION_BG = "FFEDF2F7";
 
-    // ── Summary sheet ──
-    var summary = wb.addWorksheet("Summary");
-    summary.columns = [
-      { header: "Metric", key: "metric", width: 28 },
-      { header: "Value", key: "value", width: 28 },
-    ];
-    applyHeaderStyle(summary);
-    addRows(summary, [
-      ["Company", inputs.companyName],
-      ["Stage", titleCase(inputs.stage)],
-      ["Sector", inputs.sector],
-      ["Geography", inputs.geography],
-      ["Mode", titleCase(inputs.mode)],
-      ["Final Low (M)", roundNum(result.range.low, 4)],
-      ["Final Base (M)", roundNum(result.range.base, 4)],
-      ["Final High (M)", roundNum(result.range.high, 4)],
-      ["Confidence", result.confidence.score + "/100 (" + result.confidence.label + ")"],
-      ["Generated", formatDate(result.timestamp)],
-      ["Assumptions Date", result.assumptionsDate],
-    ]);
-    applyAlternatingRows(summary);
+    function navyFill() { return { type: "pattern", pattern: "solid", fgColor: { argb: NAVY } }; }
+    function darkFill() { return { type: "pattern", pattern: "solid", fgColor: { argb: DARK_BG } }; }
+    function lightFill() { return { type: "pattern", pattern: "solid", fgColor: { argb: LIGHT_GRY } }; }
+    function sectionFillBg() { return { type: "pattern", pattern: "solid", fgColor: { argb: SECTION_BG } }; }
+    function wFont(b, sz) { return { bold: !!b, color: { argb: "FFFFFFFF" }, size: sz || 11, name: "Calibri" }; }
+    function bFont(b, sz) { return { bold: !!b, color: { argb: BLUE_FNT }, size: sz || 11, name: "Calibri" }; }
+    function kFont(b, sz) { return { bold: !!b, color: { argb: BLK }, size: sz || 11, name: "Calibri" }; }
+    function gFont(sz) { return { bold: false, color: { argb: GREY_TXT }, size: sz || 11, name: "Calibri" }; }
+    function dFont(b, sz) { return { bold: !!b, size: sz || 11, name: "Calibri" }; }
+    var moneyFmt = '$#,##0.00"M"';
 
-    // ── Inputs sheet ──
-    var inputsSheet = wb.addWorksheet("Inputs");
-    inputsSheet.columns = [
-      { header: "Field", key: "field", width: 32 },
-      { header: "Value", key: "value", width: 24 },
-    ];
-    applyHeaderStyle(inputsSheet);
-    addRows(inputsSheet, [
-      ["Company", inputs.companyName],
-      ["Mode", titleCase(inputs.mode)],
-      ["Stage", titleCase(inputs.stage)],
-      ["Sector", inputs.sector],
-      ["Geography", inputs.geography],
-      ["Business Model", inputs.businessModel],
-      ["Founding Year", inputs.foundingYear],
-      ["Revenue Run-rate (M)", roundNum(inputs.revenueRunRate, 4)],
-      ["Growth %", inputs.growthRate],
-      ["Gross Margin %", inputs.grossMargin],
-      ["Customers", inputs.customerCount],
-      ["CAC", inputs.cac],
-      ["LTV", inputs.ltv],
-      ["Churn %", inputs.churn],
-      ["TAM (M)", roundNum(inputs.tam, 4)],
-      ["Competition Intensity", inputs.competitionIntensity],
-      ["Moat Strength", inputs.moatStrength],
-      ["Founder Experience", inputs.founderExperience],
-      ["Concentration Risk", inputs.concentrationRisk],
-      ["Regulatory Risk", inputs.regulatoryRisk],
-      ["Raise Target (M)", roundNum(inputs.raiseTarget, 4)],
-      ["Runway (months)", inputs.runwayMonths],
-      ["Target Dilution %", inputs.targetDilution],
-      ["NRR %", inputs.nrr],
-      ["Pipeline Coverage", inputs.pipelineCoverage],
-      ["Burn Multiple", inputs.burnMultiple],
-      ["Projected CAGR %", inputs.projectedCagr],
-    ]);
-    applyAlternatingRows(inputsSheet);
+    function noGrid(s) { s.views = [{ showGridLines: false }]; }
+    function setCols(s, w) { w.forEach(function (v, i) { s.getColumn(i + 1).width = v; }); }
+    function bandRow(s, r, cols) {
+      for (var c = 1; c <= cols; c++) s.getRow(r).getCell(c).fill = navyFill();
+    }
 
-    // ── Methods sheet ──
-    var methodsSheet = wb.addWorksheet("Methods");
-    methodsSheet.columns = [
-      { header: "Method", key: "method", width: 22 },
-      { header: "Weight %", key: "weight", width: 12 },
-      { header: "Low (M)", key: "low", width: 16 },
-      { header: "Base (M)", key: "base", width: 16 },
-      { header: "High (M)", key: "high", width: 16 },
+    var geo = inputs.geography;
+
+    // ════════════════════════════════════════
+    // COVER
+    // ════════════════════════════════════════
+    var cover = wb.addWorksheet("Cover", { properties: { tabColor: { argb: NAVY } } });
+    noGrid(cover);
+    setCols(cover, [4, 50, 30, 4]);
+    bandRow(cover, 1, 4); bandRow(cover, 2, 4);
+    cover.getRow(2).getCell(2).value = "THE VC CORNER";
+    cover.getRow(2).getCell(2).font = wFont(true, 20);
+    cover.getRow(2).height = 32;
+    cover.getRow(3).getCell(2).value = "Founder Valuation Studio";
+    cover.getRow(3).getCell(2).font = dFont(false, 13);
+
+    var ci = [
+      ["Company", inputs.companyName], ["Stage", titleCase(inputs.stage)],
+      ["Sector", inputs.sector], ["Geography", geo], ["Mode", titleCase(inputs.mode)],
     ];
-    applyHeaderStyle(methodsSheet);
-    result.methods.forEach(function (m) {
-      methodsSheet.addRow({
-        method: m.name,
-        weight: Math.round(m.weight * 100),
-        low: roundNum(m.low, 4),
-        base: roundNum(m.base, 4),
-        high: roundNum(m.high, 4),
-      });
+    ci.forEach(function (p, i) {
+      var row = cover.getRow(5 + i);
+      row.getCell(2).value = p[0]; row.getCell(2).font = gFont(11);
+      row.getCell(3).value = p[1]; row.getCell(3).font = bFont(false, 11);
     });
-    applyAlternatingRows(methodsSheet);
 
-    // ── Scenarios sheet ──
-    var scenarios = wb.addWorksheet("Scenarios");
-    scenarios.columns = [
-      { header: "Scenario", key: "scenario", width: 28 },
-      { header: "Valuation (M)", key: "valuation", width: 20 },
+    cover.getRow(11).getCell(2).value = "Valuation Range";
+    cover.getRow(11).getCell(2).font = kFont(true, 13);
+    var rd = [
+      ["Low", formatMoney(result.range.low, geo), false],
+      ["Base", formatMoney(result.range.base, geo), true],
+      ["High", formatMoney(result.range.high, geo), false],
     ];
-    applyHeaderStyle(scenarios);
-    addRows(scenarios, [
-      ["Low", roundNum(result.range.low, 4)],
-      ["Base", roundNum(result.range.base, 4)],
-      ["High", roundNum(result.range.high, 4)],
-      ["Sensitivity Growth", state.sensitivity.growth + "%"],
-      ["Sensitivity Multiple", state.sensitivity.multiple + "%"],
-      ["Sensitivity Discount", state.sensitivity.discount + "%"],
-    ]);
-    applyAlternatingRows(scenarios);
+    rd.forEach(function (r, i) {
+      var row = cover.getRow(12 + i);
+      row.getCell(2).value = r[0]; row.getCell(2).font = gFont(11);
+      row.getCell(3).value = r[1]; row.getCell(3).font = kFont(r[2], 12);
+    });
+
+    cover.getRow(16).getCell(2).value = "Generated: " + formatDate(result.timestamp);
+    cover.getRow(16).getCell(2).font = gFont(9);
+    cover.getRow(17).getCell(2).value = "Benchmark assumptions last updated: " + result.assumptionsDate;
+    cover.getRow(17).getCell(2).font = gFont(9);
+    cover.getRow(19).getCell(2).value = "For decision-support only. Not investment advice. Benchmarks are static model assumptions.";
+    cover.getRow(19).getCell(2).font = gFont(9);
+
+    // ════════════════════════════════════════
+    // EXECUTIVE SUMMARY
+    // ════════════════════════════════════════
+    var es = wb.addWorksheet("Executive Summary");
+    noGrid(es);
+    setCols(es, [3, 24, 18, 18, 18, 3]);
+    bandRow(es, 1, 6); bandRow(es, 2, 6);
+    es.getRow(2).getCell(2).value = "Executive Summary";
+    es.getRow(2).getCell(2).font = wFont(true, 14);
+    es.getRow(2).height = 28;
+    es.getRow(3).getCell(2).value = inputs.companyName;
+    es.getRow(3).getCell(2).font = dFont(true, 11);
+
+    es.getRow(5).getCell(2).value = "Valuation Range";
+    es.getRow(5).getCell(2).font = kFont(true, 13);
+    ["Low", "Base", "High"].forEach(function (l, i) {
+      es.getRow(6).getCell(3 + i).value = l;
+      es.getRow(6).getCell(3 + i).font = gFont(10);
+    });
+    var r7 = es.getRow(7);
+    r7.getCell(2).value = "Pre-money ($M)"; r7.getCell(2).font = kFont(false);
+    r7.getCell(3).value = result.range.low; r7.getCell(3).font = kFont(true, 12); r7.getCell(3).numFmt = moneyFmt;
+    r7.getCell(4).value = result.range.base; r7.getCell(4).font = kFont(true, 12); r7.getCell(4).numFmt = moneyFmt;
+    r7.getCell(5).value = result.range.high; r7.getCell(5).font = kFont(true, 12); r7.getCell(5).numFmt = moneyFmt;
+    r7.height = 22;
+
+    es.getRow(9).getCell(2).value = "Method Weights";
+    es.getRow(9).getCell(2).font = kFont(true, 13);
+    var mwH = es.getRow(10);
+    ["Method", "Weight", "Base ($M)"].forEach(function (l, i) {
+      mwH.getCell(i + 2).value = l; mwH.getCell(i + 2).font = wFont(true); mwH.getCell(i + 2).fill = darkFill();
+    });
+    mwH.height = 20;
+
+    var esy = 11;
+    result.methods.forEach(function (m, i) {
+      var row = es.getRow(esy);
+      if (i % 2 === 0) { for (var c = 2; c <= 4; c++) row.getCell(c).fill = lightFill(); }
+      row.getCell(2).value = m.name; row.getCell(2).font = kFont(false);
+      row.getCell(3).value = m.weight; row.getCell(3).font = kFont(false); row.getCell(3).numFmt = "0%";
+      row.getCell(4).value = m.base; row.getCell(4).font = kFont(false); row.getCell(4).numFmt = moneyFmt;
+      esy++;
+    });
+    var bRow = es.getRow(esy);
+    bRow.getCell(2).value = "Blended"; bRow.getCell(2).font = kFont(true);
+    bRow.getCell(3).value = 1; bRow.getCell(3).font = kFont(true); bRow.getCell(3).numFmt = "0%";
+    bRow.getCell(4).value = result.range.base; bRow.getCell(4).font = kFont(true); bRow.getCell(4).numFmt = moneyFmt;
+    for (var bc = 2; bc <= 4; bc++) bRow.getCell(bc).border = { top: { style: "medium", color: { argb: BLK } } };
+    esy += 2;
+
+    es.getRow(esy).getCell(2).value = "Key Drivers";
+    es.getRow(esy).getCell(2).font = kFont(true, 13);
+    esy++;
+    result.drivers.forEach(function (d) {
+      es.getRow(esy).getCell(2).value = "\u2022  " + d;
+      es.getRow(esy).getCell(2).font = kFont(false, 10);
+      esy++;
+    });
+
+    // ════════════════════════════════════════
+    // INPUTS
+    // ════════════════════════════════════════
+    var inp = wb.addWorksheet("Inputs");
+    noGrid(inp);
+    setCols(inp, [3, 36, 22, 3]);
+    bandRow(inp, 1, 4); bandRow(inp, 2, 4);
+    inp.getRow(2).getCell(2).value = "Model Inputs";
+    inp.getRow(2).getCell(2).font = wFont(true, 14);
+    inp.getRow(2).height = 28;
+
+    var iy = 4;
+    function addSec(t) { inp.getRow(iy).getCell(2).value = t; inp.getRow(iy).getCell(2).font = dFont(true, 12); iy++; }
+    function addInp(l, v, f) {
+      var row = inp.getRow(iy);
+      row.getCell(2).value = l; row.getCell(2).font = gFont(11);
+      row.getCell(3).value = v; row.getCell(3).font = bFont(false, 11);
+      if (f) row.getCell(3).numFmt = f;
+      iy++;
+    }
+
+    addSec("Company Profile");
+    addInp("Company Name", inputs.companyName);
+    addInp("Stage", titleCase(inputs.stage));
+    addInp("Sector", inputs.sector);
+    addInp("Geography", geo);
+    addInp("Business Model", inputs.businessModel);
+    addInp("Founding Year", inputs.foundingYear, "0");
+    iy++;
+
+    addSec("Financials & Traction");
+    addInp("Revenue Run-rate ($M)", inputs.revenueRunRate, moneyFmt);
+    addInp("Annual Growth", inputs.growthRate / 100, "0%");
+    addInp("Gross Margin", inputs.grossMargin / 100, "0%");
+    addInp("Active Customers", inputs.customerCount, "#,##0");
+    addInp("CAC", inputs.cac, "$#,##0");
+    addInp("LTV", inputs.ltv, "$#,##0");
+    addInp("Annual Churn", inputs.churn / 100, "0%");
+    if (inputs.mode === "deep") {
+      addInp("Net Revenue Retention", inputs.nrr / 100, "0%");
+      addInp("Burn Multiple", inputs.burnMultiple, '0.0"x"');
+    }
+    iy++;
+
+    addSec("Market & Risk");
+    addInp("TAM ($M)", inputs.tam, '$#,##0"M"');
+    addInp("Competition Intensity (1-5)", inputs.competitionIntensity, "0");
+    addInp("Moat Strength (1-5)", inputs.moatStrength, "0");
+    addInp("Founder Experience (1-5)", inputs.founderExperience, "0");
+    addInp("Concentration Risk (1-5)", inputs.concentrationRisk, "0");
+    addInp("Regulatory Risk (1-5)", inputs.regulatoryRisk, "0");
+    iy++;
+
+    addSec("Fundraise & Projections");
+    addInp("Target Raise ($M)", inputs.raiseTarget, moneyFmt);
+    addInp("Runway (months)", inputs.runwayMonths, "0");
+    addInp("Target Dilution", inputs.targetDilution / 100, "0%");
+    if (inputs.mode === "deep") {
+      addInp("Pipeline Coverage", inputs.pipelineCoverage, '0.0"x"');
+      addInp("Projected 3Y CAGR", inputs.projectedCagr / 100, "0%");
+    }
+
+    // ════════════════════════════════════════
+    // METHODS
+    // ════════════════════════════════════════
+    var mth = wb.addWorksheet("Methods");
+    noGrid(mth);
+    setCols(mth, [3, 24, 14, 18, 18, 18, 3]);
+    bandRow(mth, 1, 7); bandRow(mth, 2, 7);
+    mth.getRow(2).getCell(2).value = "Valuation Methods";
+    mth.getRow(2).getCell(2).font = wFont(true, 14);
+    mth.getRow(2).height = 28;
+
+    var mhR = mth.getRow(4);
+    ["Method", "Weight", "Low ($M)", "Base ($M)", "High ($M)"].forEach(function (l, i) {
+      mhR.getCell(i + 2).value = l; mhR.getCell(i + 2).font = dFont(true, 11);
+    });
+
+    var my = 5;
+    result.methods.forEach(function (m) {
+      var row = mth.getRow(my);
+      row.getCell(2).value = m.name; row.getCell(2).font = kFont(false);
+      row.getCell(3).value = m.weight; row.getCell(3).font = kFont(false); row.getCell(3).numFmt = "0%";
+      row.getCell(4).value = m.low; row.getCell(4).font = kFont(false); row.getCell(4).numFmt = moneyFmt;
+      row.getCell(5).value = m.base; row.getCell(5).font = kFont(false); row.getCell(5).numFmt = moneyFmt;
+      row.getCell(6).value = m.high; row.getCell(6).font = kFont(false); row.getCell(6).numFmt = moneyFmt;
+      row.height = 20;
+      my++;
+    });
+    var mbR = mth.getRow(my);
+    mbR.getCell(2).value = "Blended"; mbR.getCell(2).font = kFont(true);
+    mbR.getCell(3).value = 1; mbR.getCell(3).font = kFont(true); mbR.getCell(3).numFmt = "0%";
+    mbR.getCell(4).value = result.range.low; mbR.getCell(4).font = kFont(true); mbR.getCell(4).numFmt = moneyFmt;
+    mbR.getCell(5).value = result.range.base; mbR.getCell(5).font = kFont(true); mbR.getCell(5).numFmt = moneyFmt;
+    mbR.getCell(6).value = result.range.high; mbR.getCell(6).font = kFont(true); mbR.getCell(6).numFmt = moneyFmt;
+    for (var mc = 2; mc <= 6; mc++) mbR.getCell(mc).border = { top: { style: "medium", color: { argb: BLK } } };
+    mbR.height = 22;
+
+    // ════════════════════════════════════════
+    // SCENARIOS
+    // ════════════════════════════════════════
+    var sc = wb.addWorksheet("Scenarios");
+    noGrid(sc);
+    setCols(sc, [3, 32, 18, 18, 18, 3]);
+    bandRow(sc, 1, 6); bandRow(sc, 2, 6);
+    sc.getRow(2).getCell(2).value = "Scenario Analysis";
+    sc.getRow(2).getCell(2).font = wFont(true, 14);
+    sc.getRow(2).height = 28;
+
+    sc.getRow(4).getCell(2).value = "Sensitivity Adjustments";
+    sc.getRow(4).getCell(2).font = dFont(true, 12);
+
+    [
+      ["Growth Shift", state.sensitivity.growth / 100],
+      ["Multiple Shift", state.sensitivity.multiple / 100],
+      ["Discount Rate Shift", state.sensitivity.discount / 100],
+    ].forEach(function (p, i) {
+      var row = sc.getRow(5 + i);
+      row.getCell(2).value = p[0]; row.getCell(2).font = gFont(11);
+      row.getCell(3).value = p[1]; row.getCell(3).font = bFont(false, 11); row.getCell(3).numFmt = "0%";
+    });
+
+    sc.getRow(9).getCell(2).value = "Resulting Valuation";
+    sc.getRow(9).getCell(2).font = kFont(true, 12);
+    sc.getRow(9).getCell(2).fill = sectionFillBg();
+
+    var scHR = sc.getRow(10);
+    ["Scenario", "Low ($M)", "Base ($M)", "High ($M)"].forEach(function (l, i) {
+      scHR.getCell(i + 2).value = l; scHR.getCell(i + 2).font = dFont(true, 11);
+    });
+
+    [
+      ["Bear Case", result.range.low * 0.85, result.range.base * 0.85, result.range.high * 0.85, false],
+      ["Base Case", result.range.low, result.range.base, result.range.high, true],
+      ["Bull Case", result.range.low * 1.18, result.range.base * 1.18, result.range.high * 1.18, false],
+    ].forEach(function (s, i) {
+      var row = sc.getRow(11 + i);
+      var bold = s[4];
+      row.getCell(2).value = s[0]; row.getCell(2).font = kFont(bold);
+      row.getCell(3).value = s[1]; row.getCell(3).font = kFont(bold); row.getCell(3).numFmt = moneyFmt;
+      row.getCell(4).value = s[2]; row.getCell(4).font = kFont(bold); row.getCell(4).numFmt = moneyFmt;
+      row.getCell(5).value = s[3]; row.getCell(5).font = kFont(bold); row.getCell(5).numFmt = moneyFmt;
+    });
 
     // Generate and download
     wb.xlsx.writeBuffer().then(function (buffer) {
       var blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       var filename = safeFilename(inputs.companyName || "startup") + "_valuation_model.xlsx";
       triggerDownload(blob, filename);
-    });
-  }
-
-  function applyHeaderStyle(sheet) {
-    var headerRow = sheet.getRow(1);
-    headerRow.eachCell(function (cell) {
-      cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF111111" } };
-      cell.font = { bold: true, color: { argb: "FFFFFFFF" }, size: 11 };
-      cell.alignment = { vertical: "middle" };
-    });
-    headerRow.height = 24;
-  }
-
-  function addRows(sheet, data) {
-    data.forEach(function (row) {
-      sheet.addRow(row);
-    });
-  }
-
-  function applyAlternatingRows(sheet) {
-    sheet.eachRow(function (row, rowNumber) {
-      if (rowNumber <= 1) return;
-      if (rowNumber % 2 === 0) {
-        row.eachCell(function (cell) {
-          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFF5F5F5" } };
-        });
-      }
     });
   }
 
