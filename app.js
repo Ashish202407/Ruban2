@@ -1126,16 +1126,6 @@
       '</div>' +
     '</div>';
 
-    var container = document.createElement("div");
-    container.innerHTML = html;
-    container.style.position = "fixed";
-    container.style.left = "0";
-    container.style.top = "0";
-    container.style.width = "780px";
-    container.style.background = "#fff";
-    container.style.zIndex = "-9999";
-    document.body.appendChild(container);
-
     var filename = safeFilename(inputs.companyName || "startup") + "_valuation_report.pdf";
 
     html2pdf()
@@ -1143,17 +1133,11 @@
         margin: [10, 10, 10, 10],
         filename: filename,
         image: { type: "jpeg", quality: 0.95 },
-        html2canvas: { scale: 2, useCORS: true, width: 780 },
+        html2canvas: { scale: 2 },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       })
-      .from(container.firstChild)
-      .save()
-      .then(function () {
-        document.body.removeChild(container);
-      })
-      .catch(function () {
-        if (container.parentNode) document.body.removeChild(container);
-      });
+      .from(html, "string")
+      .save();
   }
 
   /* ══════════════════════════════════════════════════════════════
