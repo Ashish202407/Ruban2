@@ -71,8 +71,6 @@
     low: document.getElementById("range-low"),
     base: document.getElementById("range-base"),
     high: document.getElementById("range-high"),
-    confidenceScore: document.getElementById("confidence-score"),
-    confidenceLabel: document.getElementById("confidence-label"),
     methodTable: document.getElementById("method-table"),
     drivers: document.getElementById("driver-list"),
     timestamp: document.getElementById("timestamp"),
@@ -918,8 +916,6 @@
     outputEls.low.textContent = formatMoney(result.range.low, inputs.geography);
     outputEls.base.textContent = formatMoney(result.range.base, inputs.geography);
     outputEls.high.textContent = formatMoney(result.range.high, inputs.geography);
-    outputEls.confidenceScore.textContent = result.confidence.score + "/100";
-    outputEls.confidenceLabel.textContent = result.confidence.label + " confidence";
     outputEls.timestamp.textContent = "Benchmark assumptions last updated: " + result.assumptionsDate;
 
     // Method table
@@ -1000,12 +996,13 @@
         scales: {
           y: {
             beginAtZero: true,
+            grid: { display: false },
             ticks: {
               callback: function (val) { return formatMoney(val, inputs.geography); },
               font: { size: 10 },
             },
           },
-          x: { ticks: { font: { size: 10 } } },
+          x: { grid: { display: false }, ticks: { font: { size: 10 } } },
         },
       },
     });
@@ -1049,12 +1046,13 @@
         },
         scales: {
           x: {
+            grid: { display: false },
             ticks: {
               callback: function (val) { return formatMoney(val, inputs.geography); },
               font: { size: 10 },
             },
           },
-          y: { ticks: { font: { size: 10 } } },
+          y: { grid: { display: false }, ticks: { font: { size: 10 } } },
         },
       },
     });
@@ -1069,68 +1067,92 @@
       return;
     }
 
-    // Populate hidden template
-    document.getElementById("pdf-company").textContent = inputs.companyName;
-    document.getElementById("pdf-meta").textContent =
-      titleCase(inputs.stage) + " | " + inputs.sector + " | " + inputs.geography +
-      " | Generated: " + formatDate(result.timestamp) + " | Assumptions: " + result.assumptionsDate;
-    document.getElementById("pdf-low").textContent = formatMoney(result.range.low, inputs.geography);
-    document.getElementById("pdf-base").textContent = formatMoney(result.range.base, inputs.geography);
-    document.getElementById("pdf-high").textContent = formatMoney(result.range.high, inputs.geography);
-    document.getElementById("pdf-confidence").textContent =
-      "Score: " + result.confidence.score + "/100 (" + result.confidence.label + ") \u2014 " +
-      "Completeness: " + result.confidence.parts.completeness +
-      " | Consistency: " + result.confidence.parts.consistency +
-      " | Benchmark coverage: " + result.confidence.parts.benchmarkCoverage;
+    // Build method rows HTML
+    var methodRows = result.methods.map(function (m) {
+      return '<tr>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid #ddd">' + escapeHtml(m.name) + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid #ddd">' + Math.round(m.weight * 100) + '%</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid #ddd">' + escapeHtml(formatMoney(m.low, inputs.geography)) + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid #ddd">' + escapeHtml(formatMoney(m.base, inputs.geography)) + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid #ddd">' + escapeHtml(formatMoney(m.high, inputs.geography)) + '</td>' +
+        '</tr>';
+    }).join("");
 
-    // Method table
-    var tbody = document.querySelector("#pdf-method-table tbody");
-    tbody.innerHTML = "";
-    result.methods.forEach(function (m) {
-      var tr = document.createElement("tr");
-      tr.innerHTML =
-        "<td>" + escapeHtml(m.name) + "</td>" +
-        "<td>" + Math.round(m.weight * 100) + "%</td>" +
-        "<td>" + escapeHtml(formatMoney(m.low, inputs.geography)) + "</td>" +
-        "<td>" + escapeHtml(formatMoney(m.base, inputs.geography)) + "</td>" +
-        "<td>" + escapeHtml(formatMoney(m.high, inputs.geography)) + "</td>";
-      tbody.appendChild(tr);
-    });
+    var driverItems = result.drivers.map(function (d) {
+      return '<li style="margin-bottom:6px">' + escapeHtml(d) + '</li>';
+    }).join("");
 
-    // Drivers
-    var driversUl = document.getElementById("pdf-drivers");
-    driversUl.innerHTML = "";
-    result.drivers.forEach(function (d) {
-      var li = document.createElement("li");
-      li.textContent = d;
-      driversUl.appendChild(li);
-    });
+    // Build full HTML with inline styles for html2pdf
+    var html = '<div style="font-family:Arial,Helvetica,sans-serif;color:#111;padding:32px;max-width:780px">' +
+      '<div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:3px solid #111">' +
+        '<div>' +
+          '<h1 style="font-size:22px;margin:0">' + escapeHtml(inputs.companyName) + '</h1>' +
+          '<p style="margin:4px 0 0;color:#555;font-size:12px">' +
+            escapeHtml(titleCase(inputs.stage)) + ' | ' + escapeHtml(inputs.sector) + ' | ' + escapeHtml(inputs.geography) +
+            ' | Generated: ' + escapeHtml(formatDate(result.timestamp)) + ' | Assumptions: ' + escapeHtml(result.assumptionsDate) +
+          '</p>' +
+        '</div>' +
+      '</div>' +
+      '<h2 style="font-size:15px;margin:22px 0 10px;padding-bottom:4px;border-bottom:1px solid #ddd">Executive Summary</h2>' +
+      '<div style="display:flex;gap:12px;margin-bottom:16px">' +
+        '<div style="flex:1;border:1px solid #ddd;border-radius:8px;padding:12px;text-align:center">' +
+          '<span style="font-size:12px;color:#777">Low</span>' +
+          '<strong style="display:block;font-size:18px;margin-top:4px">' + escapeHtml(formatMoney(result.range.low, inputs.geography)) + '</strong>' +
+        '</div>' +
+        '<div style="flex:1;border-radius:8px;padding:12px;text-align:center;background:#111;color:#fff">' +
+          '<span style="font-size:12px;color:rgba(255,255,255,0.7)">Base</span>' +
+          '<strong style="display:block;font-size:18px;margin-top:4px">' + escapeHtml(formatMoney(result.range.base, inputs.geography)) + '</strong>' +
+        '</div>' +
+        '<div style="flex:1;border:1px solid #ddd;border-radius:8px;padding:12px;text-align:center">' +
+          '<span style="font-size:12px;color:#777">High</span>' +
+          '<strong style="display:block;font-size:18px;margin-top:4px">' + escapeHtml(formatMoney(result.range.high, inputs.geography)) + '</strong>' +
+        '</div>' +
+      '</div>' +
+      '<h2 style="font-size:15px;margin:22px 0 10px;padding-bottom:4px;border-bottom:1px solid #ddd">Method Breakdown</h2>' +
+      '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px">' +
+        '<thead><tr>' +
+          '<th style="background:#111;color:#fff;padding:8px 10px;text-align:left">Method</th>' +
+          '<th style="background:#111;color:#fff;padding:8px 10px;text-align:left">Weight</th>' +
+          '<th style="background:#111;color:#fff;padding:8px 10px;text-align:left">Low</th>' +
+          '<th style="background:#111;color:#fff;padding:8px 10px;text-align:left">Base</th>' +
+          '<th style="background:#111;color:#fff;padding:8px 10px;text-align:left">High</th>' +
+        '</tr></thead>' +
+        '<tbody>' + methodRows + '</tbody>' +
+      '</table>' +
+      '<h2 style="font-size:15px;margin:22px 0 10px;padding-bottom:4px;border-bottom:1px solid #ddd">Key Drivers</h2>' +
+      '<ul style="font-size:12px;padding-left:20px">' + driverItems + '</ul>' +
+      '<div style="margin-top:28px;padding-top:12px;border-top:1px solid #ddd;font-size:11px;color:#888">' +
+        '<p>For decision-support only. Not investment advice. Benchmarks are static model assumptions. Generated by Founder Valuation Studio.</p>' +
+      '</div>' +
+    '</div>';
 
-    // Clone template, make visible, generate PDF
-    var template = document.getElementById("pdf-template");
-    var clone = template.cloneNode(true);
-    clone.style.display = "block";
-    clone.style.position = "absolute";
-    clone.style.left = "-9999px";
-    document.body.appendChild(clone);
+    var container = document.createElement("div");
+    container.innerHTML = html;
+    container.style.position = "fixed";
+    container.style.left = "0";
+    container.style.top = "0";
+    container.style.width = "780px";
+    container.style.background = "#fff";
+    container.style.zIndex = "-9999";
+    document.body.appendChild(container);
 
     var filename = safeFilename(inputs.companyName || "startup") + "_valuation_report.pdf";
 
     html2pdf()
       .set({
-        margin: [12, 12, 12, 12],
+        margin: [10, 10, 10, 10],
         filename: filename,
         image: { type: "jpeg", quality: 0.95 },
-        html2canvas: { scale: 2, useCORS: true },
+        html2canvas: { scale: 2, useCORS: true, width: 780 },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       })
-      .from(clone.querySelector(".pdf-page"))
+      .from(container.firstChild)
       .save()
       .then(function () {
-        document.body.removeChild(clone);
+        document.body.removeChild(container);
       })
       .catch(function () {
-        document.body.removeChild(clone);
+        if (container.parentNode) document.body.removeChild(container);
       });
   }
 

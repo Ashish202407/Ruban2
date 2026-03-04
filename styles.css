@@ -512,31 +512,6 @@ h3 {
   margin-top: 4px;
 }
 
-.confidence-box {
-  border: 1px solid var(--line);
-  border-radius: 13px;
-  padding: 10px 14px;
-  background: #f2f2f2;
-  text-align: right;
-}
-
-.confidence-box p {
-  margin: 0;
-  font-size: 0.78rem;
-  color: var(--muted);
-}
-
-.confidence-box strong {
-  display: block;
-  font-size: 1.35rem;
-  font-family: "Sora", sans-serif;
-}
-
-.confidence-box span {
-  color: var(--muted);
-  font-size: 0.82rem;
-}
-
 .range-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
