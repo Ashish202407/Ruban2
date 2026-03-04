@@ -10,172 +10,351 @@
     <div class="ambient-shape ambient-shape-a"></div>
     <div class="ambient-shape ambient-shape-b"></div>
     <main class="app-shell">
+
+      <!-- ── Header ── -->
       <header class="hero">
-        <p class="eyebrow">Founder Valuation Studio</p>
-        <h1>Fast valuation range with transparent methods</h1>
-        <p class="subhead">
-          Decision-support for founders across US and Europe. Get a credible range,
-          method breakdown, confidence score, and downloadable outputs.
-        </p>
-        <div class="mode-toggle" role="tablist" aria-label="Assessment depth">
-          <button type="button" class="mode-btn active" data-mode="quick">
-            Quick Check
-          </button>
-          <button type="button" class="mode-btn" data-mode="deep">
-            Deep Dive
-          </button>
+        <div class="hero-brand">
+          <img src="Ruban.png" alt="The VC Corner" class="brand-logo" />
+          <div>
+            <p class="eyebrow">Founder Valuation Studio</p>
+            <p class="subhead">
+              Decision-support for founders across US and Europe. Get a credible
+              range, method breakdown, confidence score, and downloadable outputs.
+            </p>
+          </div>
         </div>
       </header>
 
-      <section class="panel">
-        <form id="valuation-form" novalidate>
-          <div class="form-grid">
-            <section class="form-section">
-              <h2>Company Profile</h2>
-              <label>
-                Company name
-                <input type="text" name="companyName" placeholder="Acme Labs" />
-              </label>
-              <label>
-                Stage
-                <select name="stage" id="stage">
-                  <option value="pre-revenue">Pre-revenue</option>
-                  <option value="early-revenue" selected>Early revenue</option>
-                  <option value="growth">Growth</option>
-                </select>
-              </label>
-              <label>
-                Sector
-                <select name="sector">
-                  <option>SaaS</option>
-                  <option>AI-native software</option>
-                  <option>E-commerce/D2C</option>
-                  <option>Marketplace</option>
-                  <option>Fintech</option>
-                  <option>Healthtech</option>
-                </select>
-              </label>
-              <label>
-                Geography
-                <select name="geography">
-                  <option>US</option>
-                  <option>Europe</option>
-                </select>
-              </label>
-              <label>
-                Business model
-                <select name="businessModel">
-                  <option>B2B</option>
-                  <option>B2C</option>
-                  <option>B2B2C</option>
-                </select>
-              </label>
-              <label>
-                Founding year
-                <input type="number" name="foundingYear" min="1990" max="2035" value="2022" />
-              </label>
-            </section>
+      <!-- ── Wizard ── -->
+      <section class="panel wizard-panel">
 
-            <section class="form-section">
-              <h2>Traction & Economics</h2>
-              <label data-revenue="true">
-                Annual revenue run-rate
-                <input type="number" name="revenueRunRate" placeholder="1200000" min="0" step="1000" />
-              </label>
-              <label data-revenue="true">
-                Annual growth (%)
-                <input type="number" name="growthRate" placeholder="60" min="-50" max="500" step="1" />
-              </label>
-              <label data-revenue="true">
-                Gross margin (%)
-                <input type="number" name="grossMargin" placeholder="70" min="0" max="100" step="1" />
-              </label>
-              <label data-revenue="true">
-                Active customers
-                <input type="number" name="customerCount" placeholder="180" min="0" step="1" />
-              </label>
-              <label data-revenue="true">
-                CAC
-                <input type="number" name="cac" placeholder="2800" min="0" step="1" />
-              </label>
-              <label data-revenue="true">
-                LTV
-                <input type="number" name="ltv" placeholder="14000" min="0" step="1" />
-              </label>
-              <label data-revenue="true">
-                Annual churn (%)
-                <input type="number" name="churn" placeholder="10" min="0" max="100" step="1" />
-              </label>
-            </section>
+        <!-- Progress indicator -->
+        <div class="wizard-progress">
+          <div class="progress-steps">
+            <button type="button" class="progress-step active" data-step="1">
+              <span class="step-circle"><span class="step-num">1</span></span>
+              <span class="step-label">Mode</span>
+            </button>
+            <div class="progress-line"></div>
+            <button type="button" class="progress-step" data-step="2">
+              <span class="step-circle"><span class="step-num">2</span></span>
+              <span class="step-label">Profile</span>
+            </button>
+            <div class="progress-line"></div>
+            <button type="button" class="progress-step" data-step="3">
+              <span class="step-circle"><span class="step-num">3</span></span>
+              <span class="step-label">Financials</span>
+            </button>
+            <div class="progress-line"></div>
+            <button type="button" class="progress-step" data-step="4">
+              <span class="step-circle"><span class="step-num">4</span></span>
+              <span class="step-label">Market</span>
+            </button>
+            <div class="progress-line"></div>
+            <button type="button" class="progress-step" data-step="5">
+              <span class="step-circle"><span class="step-num">5</span></span>
+              <span class="step-label">Fundraise</span>
+            </button>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+        </div>
 
-            <section class="form-section">
-              <h2>Market & Risk</h2>
-              <label>
-                TAM estimate
-                <input type="number" name="tam" placeholder="5000000000" min="0" step="1000000" />
-              </label>
-              <label>
-                Competition intensity (1-5)
+        <!-- Step 1: Mode Selection -->
+        <div class="wizard-step" data-step="1">
+          <h2>Choose Your Assessment Mode</h2>
+          <p class="step-desc">How deep do you want to go?</p>
+          <div class="mode-cards">
+            <button type="button" class="mode-card" data-mode="quick">
+              <span class="mode-card-icon">&#9889;</span>
+              <strong>Quick Check</strong>
+              <p>Core inputs only. Get a fast directional range in under 2 minutes.</p>
+            </button>
+            <button type="button" class="mode-card" data-mode="deep">
+              <span class="mode-card-icon">&#128300;</span>
+              <strong>Deep Dive</strong>
+              <p>Additional metrics like NRR, burn multiple, pipeline coverage for a higher-confidence output.</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Company Profile -->
+        <div class="wizard-step hidden" data-step="2">
+          <h2>Company Profile</h2>
+          <p class="step-desc">Tell us about your company.</p>
+          <div class="form-grid-single">
+            <label class="field">
+              <span class="field-label">Company name</span>
+              <input type="text" name="companyName" placeholder="Acme Labs" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">Founding year</span>
+              <input type="number" name="foundingYear" min="1990" max="2035" value="2022" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">Stage</span>
+              <select name="stage" id="stage-select">
+                <option value="pre-revenue">Pre-revenue</option>
+                <option value="early-revenue" selected>Early revenue</option>
+                <option value="growth">Growth</option>
+              </select>
+              <span class="field-error"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">Sector</span>
+              <select name="sector">
+                <option>SaaS</option>
+                <option>AI-native software</option>
+                <option>E-commerce/D2C</option>
+                <option>Marketplace</option>
+                <option>Fintech</option>
+                <option>Healthtech</option>
+              </select>
+              <span class="field-error"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">Geography</span>
+              <select name="geography">
+                <option>US</option>
+                <option>Europe</option>
+              </select>
+              <span class="field-error"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">Business model</span>
+              <select name="businessModel">
+                <option>B2B</option>
+                <option>B2C</option>
+                <option>B2B2C</option>
+              </select>
+              <span class="field-error"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 3: Financials & Traction -->
+        <div class="wizard-step hidden" data-step="3">
+          <h2>Financials &amp; Traction</h2>
+          <p class="step-desc" id="step3-desc">Enter your financial metrics.</p>
+          <div class="form-grid-single">
+            <!-- Pre-revenue fields -->
+            <label class="field prerev-field hidden">
+              <span class="field-label">Product stage</span>
+              <select name="productStage">
+                <option value="idea">Idea</option>
+                <option value="prototype">Prototype</option>
+                <option value="mvp" selected>MVP</option>
+                <option value="beta">Beta</option>
+              </select>
+              <span class="field-error"></span>
+            </label>
+            <label class="field prerev-field hidden">
+              <span class="field-label">Early users / waitlist count</span>
+              <input type="number" name="earlyUsers" placeholder="500" min="0" step="1" />
+              <span class="field-error"></span>
+            </label>
+
+            <!-- Revenue fields (early-revenue & growth) -->
+            <label class="field rev-field">
+              <span class="field-label">Annual revenue run-rate
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Annualized revenue based on your current monthly run-rate (MRR × 12).</span>
+                </span>
+              </span>
+              <input type="text" name="revenueRunRate" placeholder="1,200,000" class="fmt-number" data-raw-value="" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field rev-field">
+              <span class="field-label">Annual growth (%)</span>
+              <input type="number" name="growthRate" placeholder="60" min="-50" max="500" step="1" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field rev-field">
+              <span class="field-label">Gross margin (%)
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Percentage of revenue remaining after cost of goods sold.</span>
+                </span>
+              </span>
+              <input type="number" name="grossMargin" placeholder="70" min="0" max="100" step="1" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field rev-field">
+              <span class="field-label">Active customers</span>
+              <input type="number" name="customerCount" placeholder="180" min="0" step="1" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field rev-field">
+              <span class="field-label">CAC
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Customer Acquisition Cost — average cost to acquire one new customer.</span>
+                </span>
+              </span>
+              <input type="text" name="cac" placeholder="2,800" class="fmt-number" data-raw-value="" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field rev-field">
+              <span class="field-label">LTV
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Lifetime Value — total revenue expected from a customer over their entire relationship with your company.</span>
+                </span>
+              </span>
+              <input type="text" name="ltv" placeholder="14,000" class="fmt-number" data-raw-value="" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field rev-field">
+              <span class="field-label">Annual churn (%)
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Annual percentage of customers or revenue lost.</span>
+                </span>
+              </span>
+              <input type="number" name="churn" placeholder="10" min="0" max="100" step="1" />
+              <span class="field-error"></span>
+            </label>
+
+            <!-- Deep Dive fields for Step 3 -->
+            <label class="field rev-field deep-field hidden">
+              <span class="field-label">Net revenue retention (%)
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">NRR — percentage of revenue retained from existing customers including upsells, downgrades, and churn.</span>
+                </span>
+              </span>
+              <input type="number" name="nrr" placeholder="115" min="30" max="200" step="1" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field rev-field deep-field hidden">
+              <span class="field-label">Burn multiple
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Net burn divided by net new ARR. Measures capital efficiency — lower is better. Under 1.5x is excellent.</span>
+                </span>
+              </span>
+              <input type="number" name="burnMultiple" placeholder="1.6" min="0" max="10" step="0.1" />
+              <span class="field-error"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 4: Market & Risk -->
+        <div class="wizard-step hidden" data-step="4">
+          <h2>Market &amp; Risk</h2>
+          <p class="step-desc">Assess your market opportunity and risk factors.</p>
+          <div class="form-grid-single">
+            <label class="field">
+              <span class="field-label">TAM estimate
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Total Addressable Market — the total revenue opportunity if you captured 100% of your target market.</span>
+                </span>
+              </span>
+              <input type="text" name="tam" placeholder="5,000,000,000" class="fmt-number" data-raw-value="" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field slider-field">
+              <span class="field-label">Competition intensity</span>
+              <div class="slider-row">
                 <input type="range" name="competitionIntensity" min="1" max="5" step="1" value="3" />
-              </label>
-              <label>
-                Moat strength (1-5)
+                <span class="slider-badge">3</span>
+              </div>
+              <span class="field-error"></span>
+            </label>
+            <label class="field slider-field">
+              <span class="field-label">Moat strength</span>
+              <div class="slider-row">
                 <input type="range" name="moatStrength" min="1" max="5" step="1" value="3" />
-              </label>
-              <label>
-                Founder experience (1-5)
+                <span class="slider-badge">3</span>
+              </div>
+              <span class="field-error"></span>
+            </label>
+            <label class="field slider-field">
+              <span class="field-label">Founder experience</span>
+              <div class="slider-row">
                 <input type="range" name="founderExperience" min="1" max="5" step="1" value="3" />
-              </label>
-              <label>
-                Concentration risk (1-5)
+                <span class="slider-badge">3</span>
+              </div>
+              <span class="field-error"></span>
+            </label>
+            <label class="field slider-field">
+              <span class="field-label">Concentration risk</span>
+              <div class="slider-row">
                 <input type="range" name="concentrationRisk" min="1" max="5" step="1" value="3" />
-              </label>
-              <label>
-                Regulatory risk (1-5)
+                <span class="slider-badge">3</span>
+              </div>
+              <span class="field-error"></span>
+            </label>
+            <label class="field slider-field">
+              <span class="field-label">Regulatory risk</span>
+              <div class="slider-row">
                 <input type="range" name="regulatoryRisk" min="1" max="5" step="1" value="2" />
-              </label>
-            </section>
-
-            <section class="form-section">
-              <h2>Fundraise Context</h2>
-              <label>
-                Target raise
-                <input type="number" name="raiseTarget" placeholder="2500000" min="0" step="1000" />
-              </label>
-              <label>
-                Runway (months)
-                <input type="number" name="runwayMonths" placeholder="18" min="1" max="48" step="1" />
-              </label>
-              <label>
-                Target dilution (%)
-                <input type="number" name="targetDilution" placeholder="18" min="1" max="60" step="1" />
-              </label>
-              <label class="deep-field" data-deep="true">
-                Net revenue retention (%)
-                <input type="number" name="nrr" placeholder="115" min="30" max="200" step="1" />
-              </label>
-              <label class="deep-field" data-deep="true">
-                Pipeline coverage (x next quarter target)
-                <input type="number" name="pipelineCoverage" placeholder="3.2" min="0" max="12" step="0.1" />
-              </label>
-              <label class="deep-field" data-deep="true">
-                Burn multiple
-                <input type="number" name="burnMultiple" placeholder="1.6" min="0" max="10" step="0.1" />
-              </label>
-              <label class="deep-field" data-deep="true">
-                3Y projected revenue CAGR (%)
-                <input type="number" name="projectedCagr" placeholder="40" min="-20" max="200" step="1" />
-              </label>
-            </section>
+                <span class="slider-badge">2</span>
+              </div>
+              <span class="field-error"></span>
+            </label>
           </div>
+        </div>
 
-          <div class="actions">
-            <button type="submit" class="primary-btn">Run Valuation</button>
-            <p id="form-warning" class="warning" aria-live="polite"></p>
+        <!-- Step 5: Fundraise & Projections -->
+        <div class="wizard-step hidden" data-step="5">
+          <h2>Fundraise &amp; Projections</h2>
+          <p class="step-desc">Your fundraising plans and forward-looking inputs.</p>
+          <div class="form-grid-single">
+            <label class="field">
+              <span class="field-label">Target raise</span>
+              <input type="text" name="raiseTarget" placeholder="2,500,000" class="fmt-number" data-raw-value="" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">Runway (months)</span>
+              <input type="number" name="runwayMonths" placeholder="18" min="1" max="48" step="1" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">Target dilution (%)</span>
+              <input type="number" name="targetDilution" placeholder="18" min="1" max="60" step="1" />
+              <span class="field-error"></span>
+            </label>
+
+            <!-- Deep Dive fields for Step 5 -->
+            <label class="field deep-field hidden">
+              <span class="field-label">Pipeline coverage (x next quarter target)
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Ratio of pipeline deal values to your next quarter revenue target. 3x+ is healthy.</span>
+                </span>
+              </span>
+              <input type="number" name="pipelineCoverage" placeholder="3.2" min="0" max="12" step="0.1" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field deep-field hidden">
+              <span class="field-label">3Y projected revenue CAGR (%)
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Compound Annual Growth Rate projected over the next 3 years.</span>
+                </span>
+              </span>
+              <input type="number" name="projectedCagr" placeholder="40" min="-20" max="200" step="1" />
+              <span class="field-error"></span>
+            </label>
           </div>
-        </form>
+        </div>
+
+        <!-- Wizard navigation -->
+        <div class="wizard-nav">
+          <button type="button" class="secondary-btn" id="btn-back" disabled>Back</button>
+          <p id="wizard-warning" class="warning" aria-live="polite"></p>
+          <button type="button" class="primary-btn" id="btn-next">Next</button>
+        </div>
       </section>
 
+      <!-- ── Results ── -->
       <section id="results" class="panel results hidden" aria-live="polite">
         <div class="result-head">
           <div>
@@ -205,16 +384,33 @@
           </article>
         </div>
 
+        <!-- Charts -->
+        <div class="charts-grid">
+          <article class="card">
+            <h3>Method Comparison</h3>
+            <div class="chart-wrap">
+              <canvas id="chart-methods"></canvas>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Valuation Range by Method</h3>
+            <div class="chart-wrap">
+              <canvas id="chart-range"></canvas>
+            </div>
+          </article>
+        </div>
+
         <div class="results-grid">
           <article class="card">
             <h3>Method Breakdown</h3>
-            <div id="method-bars" class="method-bars"></div>
             <table>
               <thead>
                 <tr>
                   <th>Method</th>
                   <th>Weight</th>
+                  <th>Low</th>
                   <th>Base</th>
+                  <th>High</th>
                 </tr>
               </thead>
               <tbody id="method-table"></tbody>
@@ -223,17 +419,17 @@
 
           <article class="card">
             <h3>Sensitivity</h3>
-            <label>
+            <label class="sensitivity-label">
               Growth shift
               <input type="range" id="sensitivity-growth" min="-20" max="20" step="1" value="0" />
               <span id="sensitivity-growth-value">0%</span>
             </label>
-            <label>
+            <label class="sensitivity-label">
               Multiple shift
               <input type="range" id="sensitivity-multiple" min="-20" max="20" step="1" value="0" />
               <span id="sensitivity-multiple-value">0%</span>
             </label>
-            <label>
+            <label class="sensitivity-label">
               Discount rate shift
               <input type="range" id="sensitivity-discount" min="-20" max="20" step="1" value="0" />
               <span id="sensitivity-discount-value">0%</span>
@@ -261,10 +457,59 @@
           <button type="button" id="download-model" class="secondary-btn">
             Download Excel Model
           </button>
+          <button type="button" id="btn-start-over" class="secondary-btn">
+            Start Over
+          </button>
         </div>
       </section>
+
+      <!-- Hidden PDF template -->
+      <div id="pdf-template" style="display:none">
+        <div class="pdf-page">
+          <div class="pdf-header">
+            <img src="Ruban.png" alt="" class="pdf-logo" />
+            <div>
+              <h1 id="pdf-company" class="pdf-title"></h1>
+              <p id="pdf-meta" class="pdf-meta"></p>
+            </div>
+          </div>
+          <h2 class="pdf-section-title">Executive Summary</h2>
+          <div class="pdf-range-row">
+            <div class="pdf-range-card">
+              <span class="pdf-range-label">Low</span>
+              <strong id="pdf-low"></strong>
+            </div>
+            <div class="pdf-range-card pdf-range-base">
+              <span class="pdf-range-label">Base</span>
+              <strong id="pdf-base"></strong>
+            </div>
+            <div class="pdf-range-card">
+              <span class="pdf-range-label">High</span>
+              <strong id="pdf-high"></strong>
+            </div>
+          </div>
+          <h2 class="pdf-section-title">Method Breakdown</h2>
+          <table class="pdf-table" id="pdf-method-table">
+            <thead>
+              <tr><th>Method</th><th>Weight</th><th>Low</th><th>Base</th><th>High</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <h2 class="pdf-section-title">Confidence</h2>
+          <p id="pdf-confidence"></p>
+          <h2 class="pdf-section-title">Key Drivers</h2>
+          <ul id="pdf-drivers"></ul>
+          <div class="pdf-disclaimer">
+            <p>For decision-support only. Not investment advice. Benchmarks are static model assumptions. Generated by Founder Valuation Studio.</p>
+          </div>
+        </div>
+      </div>
+
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
