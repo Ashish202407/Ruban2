@@ -18,8 +18,8 @@
           <div>
             <p class="eyebrow">Founder Valuation Studio</p>
             <p class="subhead">
-              Decision-support for founders across US and Europe. Get a credible
-              range, method breakdown, confidence score, and downloadable outputs.
+              Decision-support for founders across 6 geographies and 10 sectors.
+              Get a credible range, method breakdown, quality signals, and downloadable outputs.
             </p>
           </div>
         </div>
@@ -112,6 +112,10 @@
                 <option>Marketplace</option>
                 <option>Fintech</option>
                 <option>Healthtech</option>
+                <option>Edtech</option>
+                <option>Biotech/Deeptech</option>
+                <option>Climate/Cleantech</option>
+                <option>Consumer App</option>
               </select>
               <span class="field-error"></span>
             </label>
@@ -120,6 +124,10 @@
               <select name="geography">
                 <option>US</option>
                 <option>Europe</option>
+                <option>MENA</option>
+                <option>India/South Asia</option>
+                <option>Southeast Asia</option>
+                <option>LATAM</option>
               </select>
               <span class="field-error"></span>
             </label>
@@ -129,6 +137,50 @@
                 <option>B2B</option>
                 <option>B2C</option>
                 <option>B2B2C</option>
+              </select>
+              <span class="field-error"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">AI-integrated product?
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Does your product meaningfully integrate AI/ML capabilities? Applies a premium to revenue multiples.</span>
+                </span>
+              </span>
+              <select name="aiIntegrated">
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
+              <span class="field-error"></span>
+            </label>
+
+            <!-- Deep Dive fields for Step 2 -->
+            <label class="field deep-field hidden">
+              <span class="field-label">IP portfolio
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Intellectual property status: patents, trade secrets, or proprietary tech.</span>
+                </span>
+              </span>
+              <select name="ipPortfolio">
+                <option value="none">None</option>
+                <option value="pending">Patents pending</option>
+                <option value="granted">Granted</option>
+              </select>
+              <span class="field-error"></span>
+            </label>
+            <label class="field deep-field hidden">
+              <span class="field-label">Strategic partnerships
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Formal or informal partnerships with established companies, distributors, or platforms.</span>
+                </span>
+              </span>
+              <select name="strategicPartnerships">
+                <option value="none">None</option>
+                <option value="informal">Informal</option>
+                <option value="formal">Formal</option>
+                <option value="exclusive">Exclusive</option>
               </select>
               <span class="field-error"></span>
             </label>
@@ -156,13 +208,59 @@
               <input type="number" name="earlyUsers" placeholder="500" min="0" step="1" />
               <span class="field-error"></span>
             </label>
+            <label class="field prerev-field hidden">
+              <span class="field-label">Team size
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Number of full-time team members (including founders). Used for Cost-to-Duplicate method.</span>
+                </span>
+              </span>
+              <input type="number" name="teamSize" placeholder="5" min="1" max="200" step="1" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field prerev-field hidden">
+              <span class="field-label">Months of development
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">How many months has the product been in active development?</span>
+                </span>
+              </span>
+              <input type="number" name="devMonths" placeholder="12" min="1" max="120" step="1" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field prerev-field slider-field hidden">
+              <span class="field-label">Tech complexity
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">1 = simple app, 5 = deep-tech / hardware / novel infrastructure.</span>
+                </span>
+              </span>
+              <div class="slider-row">
+                <input type="range" name="techComplexity" min="1" max="5" step="1" value="3" />
+                <span class="slider-badge">3</span>
+              </div>
+              <span class="field-error"></span>
+            </label>
+            <label class="field prerev-field hidden">
+              <span class="field-label">IP / Patents
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Do you have filed or granted patents? Adds premium to Cost-to-Duplicate valuation.</span>
+                </span>
+              </span>
+              <select name="ipPatents">
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
+              <span class="field-error"></span>
+            </label>
 
             <!-- Revenue fields (early-revenue & growth) -->
             <label class="field rev-field">
               <span class="field-label">Annual revenue run-rate
                 <span class="tooltip-wrap" tabindex="0">
                   <span class="tooltip-icon">i</span>
-                  <span class="tooltip-content">Annualized revenue based on your current monthly run-rate (MRR × 12).</span>
+                  <span class="tooltip-content">Annualized revenue based on your current monthly run-rate (MRR x 12).</span>
                 </span>
               </span>
               <input type="text" name="revenueRunRate" placeholder="1,200,000" class="fmt-number" data-raw-value="" />
@@ -241,6 +339,26 @@
               <span class="field-error"></span>
             </label>
           </div>
+
+          <!-- Comparable Transactions (optional, all stages) -->
+          <div class="comps-section">
+            <h3>Comparable Transactions <span class="optional-badge">Optional</span></h3>
+            <p class="step-desc">Add 1-3 recent comparable deals for reference pricing.</p>
+            <div id="comp-rows">
+              <div class="comp-row" data-comp="1">
+                <input type="text" name="compName1" placeholder="Company name" class="comp-input" />
+                <input type="text" name="compVal1" placeholder="Valuation ($M)" class="comp-input fmt-number" data-raw-value="" />
+                <input type="text" name="compRev1" placeholder="Revenue ($M)" class="comp-input fmt-number" data-raw-value="" />
+                <select name="compStage1" class="comp-input">
+                  <option value="">Stage</option>
+                  <option value="pre-revenue">Pre-revenue</option>
+                  <option value="early-revenue">Early revenue</option>
+                  <option value="growth">Growth</option>
+                </select>
+              </div>
+            </div>
+            <button type="button" class="secondary-btn small-btn" id="add-comp-btn">+ Add comp</button>
+          </div>
         </div>
 
         <!-- Step 4: Market & Risk -->
@@ -298,6 +416,34 @@
               </div>
               <span class="field-error"></span>
             </label>
+
+            <!-- Deep Dive fields for Step 4 -->
+            <label class="field slider-field deep-field hidden">
+              <span class="field-label">Team completeness
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">1 = solo founder, 5 = complete founding team (CEO, CTO, sales/BD, product).</span>
+                </span>
+              </span>
+              <div class="slider-row">
+                <input type="range" name="teamCompleteness" min="1" max="5" step="1" value="3" />
+                <span class="slider-badge">3</span>
+              </div>
+              <span class="field-error"></span>
+            </label>
+            <label class="field slider-field deep-field hidden">
+              <span class="field-label">Business plan quality
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">1 = no formal plan, 5 = detailed plan with clear GTM, financial projections, and milestones.</span>
+                </span>
+              </span>
+              <div class="slider-row">
+                <input type="range" name="bizPlanQuality" min="1" max="5" step="1" value="3" />
+                <span class="slider-badge">3</span>
+              </div>
+              <span class="field-error"></span>
+            </label>
           </div>
         </div>
 
@@ -319,6 +465,36 @@
             <label class="field">
               <span class="field-label">Target dilution (%)</span>
               <input type="number" name="targetDilution" placeholder="18" min="1" max="60" step="1" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">Founder ownership (%)
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Current founder(s) ownership percentage before this round. Used for cap table simulation.</span>
+                </span>
+              </span>
+              <input type="number" name="founderOwnership" placeholder="80" min="0" max="100" step="0.5" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">ESOP pool (%)
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Employee stock option pool as percentage of total equity.</span>
+                </span>
+              </span>
+              <input type="number" name="esopPool" placeholder="10" min="0" max="40" step="0.5" />
+              <span class="field-error"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">Existing investor (%)
+                <span class="tooltip-wrap" tabindex="0">
+                  <span class="tooltip-icon">i</span>
+                  <span class="tooltip-content">Current investor ownership percentage before this round.</span>
+                </span>
+              </span>
+              <input type="number" name="existingInvestor" placeholder="10" min="0" max="80" step="0.5" />
               <span class="field-error"></span>
             </label>
 
@@ -379,6 +555,11 @@
           </article>
         </div>
 
+        <!-- Quality Metrics Strip -->
+        <div id="metrics-strip" class="metrics-strip hidden">
+          <div id="metrics-cards" class="metrics-cards"></div>
+        </div>
+
         <!-- Charts -->
         <div class="charts-grid">
           <article class="card">
@@ -393,6 +574,44 @@
               <canvas id="chart-range"></canvas>
             </div>
           </article>
+        </div>
+
+        <!-- Cap Table Simulator -->
+        <div id="captable-section" class="card captable-section hidden">
+          <h3>Cap Table Simulator</h3>
+          <div class="captable-grid">
+            <div class="captable-controls">
+              <label class="sensitivity-label">
+                Pre-money valuation ($M)
+                <input type="range" id="captable-premoney" min="0.5" max="100" step="0.5" value="5" />
+                <span id="captable-premoney-val">$5.0M</span>
+              </label>
+              <label class="sensitivity-label">
+                Raise amount ($M)
+                <input type="range" id="captable-raise" min="0.1" max="50" step="0.1" value="2" />
+                <span id="captable-raise-val">$2.0M</span>
+              </label>
+              <div class="captable-summary" id="captable-summary"></div>
+            </div>
+            <div class="captable-chart-wrap">
+              <canvas id="chart-captable"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Public Company Comps -->
+        <div id="public-comps-section" class="card hidden">
+          <h3>Public Company Comps <span class="comp-stamp">as of Q1 2026</span></h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Ticker</th>
+                <th>EV/Revenue</th>
+              </tr>
+            </thead>
+            <tbody id="public-comps-table"></tbody>
+          </table>
         </div>
 
         <div class="results-grid">
@@ -440,7 +659,7 @@
           <ul id="driver-list" class="driver-list"></ul>
           <p class="muted disclaimer">
             For decision-support only. Not investment advice. Benchmarks are static
-            model assumptions in this v1 build.
+            model assumptions in this v2 build.
           </p>
           <p id="timestamp" class="muted"></p>
         </article>

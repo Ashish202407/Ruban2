@@ -485,6 +485,11 @@ h3 {
   cursor: not-allowed;
 }
 
+.small-btn {
+  padding: 7px 16px;
+  font-size: 0.82rem;
+}
+
 .warning {
   margin: 0;
   color: var(--warn);
@@ -550,6 +555,111 @@ h3 {
   color: rgba(255, 255, 255, 0.8);
 }
 
+/* ── Quality Metrics Strip ── */
+.metrics-strip {
+  margin-top: 14px;
+}
+
+.metrics-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.metric-card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #fff;
+  animation: rise-in 520ms ease both;
+}
+
+.metric-card-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.metric-card-value {
+  font-family: "Sora", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.metric-card-grade {
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 2px;
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 4px;
+}
+
+.grade-excellent { background: #e8f5e9; color: #2e7d32; }
+.grade-good { background: #e3f2fd; color: #1565c0; }
+.grade-fair { background: #fff3e0; color: #e65100; }
+.grade-weak { background: #fce4ec; color: #c62828; }
+
+.metric-card-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #222, #050505);
+  color: #fff;
+  margin-top: 4px;
+}
+
+/* ── Comparable Transactions Section ── */
+.comps-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.comps-section h3 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.optional-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: #eee;
+  padding: 2px 8px;
+  border-radius: 4px;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+
+.comp-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.comp-input {
+  font: inherit;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fefefe;
+  font-size: 0.88rem;
+  transition: border-color 0.2s;
+}
+
+.comp-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 /* ── Charts ── */
 .charts-grid {
   display: grid;
@@ -567,6 +677,69 @@ h3 {
 .chart-wrap canvas {
   width: 100% !important;
   height: 100% !important;
+}
+
+/* ── Cap Table Simulator ── */
+.captable-section {
+  margin-top: 14px;
+}
+
+.captable-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.captable-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.captable-summary {
+  margin-top: 8px;
+}
+
+.captable-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.88rem;
+}
+
+.captable-summary-row:last-child {
+  border-bottom: none;
+  font-weight: 700;
+}
+
+.captable-summary-label {
+  color: var(--muted);
+}
+
+.captable-chart-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+/* ── Public Company Comps ── */
+.comp-stamp {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: #eee;
+  padding: 2px 8px;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+#public-comps-section {
+  margin-top: 14px;
 }
 
 /* ── Results grid ── */
@@ -806,6 +979,18 @@ th {
   .step-label {
     font-size: 0.62rem;
   }
+
+  .captable-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comp-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .metrics-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* ── Responsive: mobile ── */
@@ -865,5 +1050,17 @@ th {
 
   .download-actions .secondary-btn {
     width: 100%;
+  }
+
+  .comp-row {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .captable-grid {
+    grid-template-columns: 1fr;
   }
 }
