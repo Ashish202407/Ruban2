@@ -73,15 +73,6 @@ body {
   gap: 16px;
 }
 
-.brand-logo {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--line);
-  flex-shrink: 0;
-}
-
 .eyebrow {
   margin: 0;
   text-transform: uppercase;

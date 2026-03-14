@@ -113,7 +113,7 @@ function titleBand(sheet, row, cols, text, fontSize) {
 
 async function main() {
   const wb = new ExcelJS.Workbook();
-  wb.creator = "The VC Corner — Founder Valuation Studio";
+  wb.creator = "Startup Valuation Calculator";
   wb.created = new Date();
 
   // ════════════════════════════════════════════
@@ -129,12 +129,12 @@ async function main() {
       cover.getRow(r).getCell(c).fill = navyFill();
     }
   }
-  cover.getRow(2).getCell(2).value = "THE VC CORNER";
+  cover.getRow(2).getCell(2).value = "STARTUP VALUATION";
   cover.getRow(2).getCell(2).font = whiteFont(true, 20);
   cover.getRow(2).height = 32;
 
   // Subtitle — no bg, default black, sz:13
-  cover.getRow(3).getCell(2).value = "Founder Valuation Studio";
+  cover.getRow(3).getCell(2).value = "Calculator";
   cover.getRow(3).getCell(2).font = defaultFont(false, 13);
 
   // Row 4 blank

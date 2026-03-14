@@ -1,4 +1,4 @@
-# Project Context: Founder Valuation Studio
+# Project Context: Startup Valuation Calculator
 
 ## What this is
 Founder-facing valuation calculator that gives a fast but credible range using multiple methods, quality signals, and transparent assumptions.
@@ -80,13 +80,12 @@ Quality signals & multipliers:
 - Cap table simulator: Pre-money/raise sliders, doughnut chart, live ownership breakdown
 - Public company comps table: 3-4 comps per sector for growth-stage companies (as of Q1 2026)
 - Downloads:
-  - PDF report (jsPDF with logo, methodology note, branded footer, page overflow handling)
+  - PDF report (jsPDF with methodology note, footer, page overflow handling)
   - Excel model (ExcelJS with 5 sheets: Cover, Executive Summary, Inputs, Methods, Scenarios)
 
 ## Theme
 - Black / grey / white palette across UI, charts, PDF, and Excel
 - Fonts: Manrope (body), Sora (headings)
-- Logo: Ruban.png ("The VC Corner" branding), base64-encoded in app.js for PDF
 
 ## Data and storage status
 - No backend.

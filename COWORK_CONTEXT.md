@@ -1,4 +1,4 @@
-# Founder Valuation Studio -- Context for Claude Cowork
+# Startup Valuation Calculator -- Context for Claude Cowork
 
 ## What is Claude Cowork?
 
@@ -16,7 +16,7 @@ Claude Cowork is a feature in Claude Desktop that turns Claude into an autonomou
 
 ## What is This Project?
 
-**Founder Valuation Studio** by The VC Corner -- a single-page web app that helps startup founders estimate their company's valuation using multiple methodologies, benchmarked against real market data.
+**Startup Valuation Calculator** -- a single-page web app that helps startup founders estimate their company's valuation using multiple methodologies, benchmarked against real market data.
 
 ### Live App
 
@@ -35,8 +35,6 @@ Open `index.html` in a browser (works from file:// or GitHub Pages).
 | `index.html` | 5-step wizard UI |
 | `styles.css` | Styling (Manrope/Sora fonts, grey palette, responsive) |
 | `app.js` | All logic -- constants, engine, rendering, charts, PDF & Excel exports |
-| `TheVCcorner_Logo.webp` | Logo for web UI |
-| `VC - Logo.jpeg` | Logo for PDF export (base64-encoded in app.js) |
 
 ---
 
@@ -66,7 +64,7 @@ Open `index.html` in a browser (works from file:// or GitHub Pages).
 ### Exports
 
 **PDF Report** (jsPDF) -- single-page investor-quality layout:
-- 3-column header (logo + brand, company name, stage/sector/geo + date)
+- 3-column header (brand, company name, stage/sector/geo + date)
 - Grey valuation band with LOW / BASE / HIGH
 - Compact key metrics line
 - Auto-generated methodology note
@@ -74,7 +72,7 @@ Open `index.html` in a browser (works from file:// or GitHub Pages).
 - Top valuation drivers
 - Public company comps with inline bar charts (growth-stage only)
 - Cap table as 4 horizontal boxes
-- Branded footer with disclaimer
+- Footer with disclaimer
 
 **Excel Model** (ExcelJS) -- 6 sheets:
 - Cover (dark grey header band, valuation range)
